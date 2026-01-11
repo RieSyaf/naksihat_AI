@@ -1,0 +1,66 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow every time you push to main
+
+env:
+  PROJECT_ID: naksihat-ai  # <--- VERIFY THIS MATCHES YOUR GCP PROJECT ID
+  REGION: asia-southeast1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      # 1. Download your code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Log in to Google Cloud using the Key you added
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      # 3. Set up Cloud SDK
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      # 4. Build and Push BACKEND (API)
+      # This command builds the container and saves it to Google's registry
+      - name: Build Backend Container
+        run: |
+          gcloud builds submit . --tag gcr.io/$PROJECT_ID/naksihat-api
+
+      # 5. Deploy BACKEND
+      # This launches the container on a server
+      - name: Deploy Backend Service
+        run: |
+          gcloud run deploy naksihat-api \
+            --image gcr.io/$PROJECT_ID/naksihat-api \
+            --region $REGION \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080
+
+      # 6. Build and Push FRONTEND (UI)
+      # Note: We point to the 'frontend' folder
+      - name: Build Frontend Container
+        run: |
+          gcloud builds submit frontend --tag gcr.io/$PROJECT_ID/naksihat-ui
+
+      # 7. Deploy FRONTEND
+      - name: Deploy Frontend Service
+        run: |
+          gcloud run deploy naksihat-ui \
+            --image gcr.io/$PROJECT_ID/naksihat-ui \
+            --region $REGION \
+            --platform managed \
+            --allow-unauthenticated \
+            --port 8080
