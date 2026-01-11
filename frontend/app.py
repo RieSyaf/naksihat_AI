@@ -25,7 +25,7 @@ with st.form("user_input"):
 # 3. Logic: When button is clicked...
 if submitted:
     # Prepare the data dictionary (must match FastAPI Input Model exactly)
-    api_url = "http://127.0.0.1:8000/predict"
+    api_url = "https://ironpath-api-371790036126.asia-southeast1.run.app/predict"
     payload = {
         "age": age,
         "gender": gender,
