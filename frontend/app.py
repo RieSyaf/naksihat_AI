@@ -3,7 +3,7 @@ import requests
 
 # 1. Setup the Page
 st.set_page_config(page_title="NAKSIHAT-AI", page_icon="💪")
-st.title("🔥 NAKSIHAT - AI 🔥", text_alignment='center')
+st.title("🔥 NAKSIHAT-AI 🔥", text_alignment='center')
 st.write("Enter your details below to get a custom AI-generated regimen.")
 
 # 2. Input Form
