@@ -3,7 +3,7 @@ import requests
 import os
 
 # --- CONFIGURATION ---
-st.set_page_config(page_title="Naksihat AI", layout="wide")
+st.set_page_config(page_title="💪🏼 NAKSIHAT AI", layout="wide")
 
 # API URL (Connects to your FastAPI Backend)
 API_URL = os.getenv("API_URL", "https://naksihat-api-371790036126.asia-southeast1.run.app")
@@ -27,6 +27,46 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+def custom_info_box(text, font_size="24px", align="center"):
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #111184; 
+            padding: 0px; 
+            border-radius: 10px; 
+            border-left: 0px;
+            text-align: {align};
+            padding: 5px;
+            margin-bottom: 15px;
+        ">
+            <span style="font-size: {font_size}; font-weight: bold; color: #83EEFF; font-family: sans-serif;  font-weight: 900; letter-spacing: 3px;">
+                {text}
+            </span>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+
+def custom_info_box2(text, font_size="24px", align="center"):
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #06402B; 
+            padding: 0px; 
+            border-radius: 10px; 
+            border-left: 0px;
+            text-align: {align};
+            padding: 5px;
+            margin-bottom: 15px;
+        ">
+            <span style="font-size: {font_size}; font-weight: bold; color: #0FFF50; font-family: sans-serif;  font-weight: 900; letter-spacing: 3px;">
+                {text}
+            </span>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+
 # --- NAVIGATION STATE ---
 if 'page' not in st.session_state:
     st.session_state.page = 'home'
@@ -44,18 +84,18 @@ def go_plan():
 # 🏠 HOME PAGE
 # ==========================
 if st.session_state.page == 'home':
-    st.markdown("<h1 class='main-header'>🤖 Naksihat AI Hub</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='main-header'>🔥 NAKSIHAT-AI 🔥</h1>", unsafe_allow_html=True)
     st.markdown("### Choose your health journey:")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.info("🏋️‍♂️ **Get Fit**")
+        custom_info_box("🏋️‍♂️ Get Fit", font_size="32px", align="center")
         st.markdown("Get personalized workout routines and meal plans tailored to your goal.")
         st.button("Generate Diet & Workout Plan", on_click=go_plan)
         
     with col2:
-        st.success("🧬 **Analyze Body**")
+        custom_info_box2("🧬 Analyze Body", font_size="32px", align="center")
         st.markdown("Calculate medical-grade Body Fat % using our PyTorch AI scan.")
         st.button("Calculate Body Fat %", on_click=go_bfp)
 
@@ -64,7 +104,7 @@ if st.session_state.page == 'home':
 # ==========================
 elif st.session_state.page == 'bfp':
     st.button("← Back to Home", on_click=go_home)
-    st.title("🧬 Body Composition Analyzer")
+    st.title("🧬 Body Fat Percentage Analyzer")
     st.markdown("Enter your measurements below. The AI uses these to predict your body fat percentage.")
 
     with st.form("bfp_form"):
@@ -144,10 +184,17 @@ elif st.session_state.page == 'bfp':
                 st.progress(min(bfp/50, 1.0))
                 
                 # Health Context
-                if bfp < 6: st.warning("⚠️ Essential Fat Only (Very Low)")
-                elif bfp < 14: st.info("🏃 Athlete / Lean")
-                elif bfp < 25: st.success("✅ Fitness / Average")
-                else: st.warning("💪 Above Average")
+                if bfp < 6: 
+                    st.error("⚠️ **Essential Fat Only** -> Your body fat is at a critical level; consult a professional to ensure hormonal health.")
+
+                elif bfp < 14: 
+                    st.info("🏃 **Athlete / Lean** -> Peak performance range: You are highly lean with excellent muscle definition.")
+
+                elif bfp < 25: 
+                    st.success("✅ **Fitness / Average** -> Healthy and sustainable: You maintain a balanced body composition for an active lifestyle.")
+
+                else: 
+                    st.warning("⚠️ **Obesity**  ->  Elevated health risk: Focus on a consistent caloric deficit and strength training.")
 
             else:
                 st.error(f"Server Error: {res.text}")
@@ -159,7 +206,7 @@ elif st.session_state.page == 'bfp':
 # ==========================
 elif st.session_state.page == 'plan':
     st.button("← Back to Home", on_click=go_home)
-    st.title("🏋️‍♂️ Smart Coach")
+    st.title("🏋️‍♂️ Workout & Diet Planner")
     
     with st.form("plan_form"):
         col1, col2 = st.columns(2)
@@ -186,8 +233,8 @@ elif st.session_state.page == 'plan':
                     st.divider()
                     st.subheader("📋 Your Custom Plan")
                     
-                    st.info(f"**Diet Recommendation:** {data['diet_plan']}")
-                    st.success(f"**Workout Recommendation:** {data['workout_plan']}")
+                    custom_info_box(f"Diet Recommendation: {data['diet_plan']}")
+                    custom_info_box2(f"Workout Recommendation: {data['workout_plan']}")
                     st.caption(f"Based on BMI: {data['bmi']}")
                 else:
                     st.error(f"Error: {res.text}")
