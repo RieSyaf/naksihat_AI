@@ -6,7 +6,7 @@ import os
 st.set_page_config(page_title="Naksihat AI", layout="wide")
 
 # API URL (Connects to your FastAPI Backend)
-API_URL = os.getenv("API_URL", "http://localhost:8000")
+API_URL = os.getenv("API_URL", "https://naksihat-api-371790036126.asia-southeast1.run.app")
 
 # --- CUSTOM CSS ---
 st.markdown("""
