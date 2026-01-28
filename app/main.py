@@ -10,7 +10,7 @@ app = FastAPI(title='Naksihat AI API', version='2.0')
 
 # --- DATA MODELS ---
 
-# Input for Diet/Workout (Matches your sklearn logic)
+# Input for Diet/Workout (Matches sklearn logic)
 class DietWorkoutInput(BaseModel):
     age: int
     gender: str
@@ -19,7 +19,7 @@ class DietWorkoutInput(BaseModel):
     activeness: str
     goal: str
 
-# Input for Body Fat (Matches your PyTorch logic)
+# Input for Body Fat (Matches PyTorch logic)
 class BodyFatInput(BaseModel):
     sex: str
     age: float

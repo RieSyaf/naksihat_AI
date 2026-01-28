@@ -216,7 +216,7 @@ elif st.session_state.page == 'plan':
             height = st.number_input("Height (cm)", 100.0, 250.0, 175.0)
         with col2:
             weight = st.number_input("Weight (kg)", 30.0, 200.0, 70.0)
-            activeness = st.selectbox("Activity Level", ["Sedentary", "Lightly Active", "Moderately Active", "Very Active"])
+            activeness = st.selectbox("Activity Level", ["Sedentary", "Lightly Active", "Moderate Active", "Very Active"])
             goal = st.selectbox("Goal", ["Weight Loss", "Muscle Gain", "Maintenance"])
         
         if st.form_submit_button("Generate Plan"):

@@ -55,8 +55,8 @@ def get_bodyfat_prediction(features_array):
     """
     if model is None or scaler is None:
         raise Exception("Body Fat Model is not loaded.")
-    
-    with torch.no_grad():
+
+    with torch.no_grad(): #escape learning mode
         features_scaled = scaler.transform(features_array)
         inputs = torch.FloatTensor(features_scaled)
         prediction = model(inputs)

@@ -12,6 +12,8 @@ Cloud Native: Fully containerized with Docker and deployed on Google Cloud Platf
 
 Interactive Dashboard: A real-time Streamlit frontend for data visualization and user interaction.
 
+![NakSihat Architecture Diagram](archi.jpg)
+
 🏗️ Technical Architecture
 1. AI & Machine Learning Layer
 Deep Learning: Developed a regression model using PyTorch trained on the Kaggle Body Fat Extended dataset. Achieved a refined loss score of 17.6783 through optimized hyperparameter tuning.
