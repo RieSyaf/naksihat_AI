@@ -8,6 +8,9 @@ st.set_page_config(page_title="💪🏼 NAKSIHAT AI", layout="wide")
 # API URL (Connects to your FastAPI Backend)
 API_URL = os.getenv("API_URL", "https://naksihat-api-371790036126.asia-southeast1.run.app")
 
+# Temporarily set to localhost for testing
+#API_URL = os.getenv("API_URL", "http://localhost:850")
+
 # --- CUSTOM CSS ---
 st.markdown("""
 <style>
@@ -67,6 +70,26 @@ def custom_info_box2(text, font_size="24px", align="center"):
         unsafe_allow_html=True
     )
 
+def custom_info_box3(text, font_size="24px", align="center"):
+    st.markdown(
+        f"""
+        <div style="
+            background-color: #3b0764; 
+            padding: 0px; 
+            border-radius: 10px; 
+            border-left: 0px;
+            text-align: {align};
+            padding: 5px;
+            margin-bottom: 15px;
+        ">
+            <span style="font-size: {font_size}; font-weight: bold; color: #d8b4fe; font-family: sans-serif;  font-weight: 900; letter-spacing: 3px;">
+                {text}
+            </span>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+
 # --- NAVIGATION STATE ---
 if 'page' not in st.session_state:
     st.session_state.page = 'home'
@@ -80,6 +103,9 @@ def go_bfp():
 def go_plan():
     st.session_state.page = 'plan'
 
+def go_jagamakan():
+    st.session_state.page = 'jagamakan'
+
 # ==========================
 # 🏠 HOME PAGE
 # ==========================
@@ -87,7 +113,7 @@ if st.session_state.page == 'home':
     st.markdown("<h1 class='main-header'>🔥 NAKSIHAT-AI 🔥</h1>", unsafe_allow_html=True)
     st.markdown("### Choose your health journey:")
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         custom_info_box("🏋️‍♂️ Get Fit", font_size="32px", align="center")
@@ -98,6 +124,11 @@ if st.session_state.page == 'home':
         custom_info_box2("🧬 Analyze Body", font_size="32px", align="center")
         st.markdown("Calculate medical-grade Body Fat % using our PyTorch AI scan.")
         st.button("Calculate Body Fat %", on_click=go_bfp)
+    
+    with col3:
+        custom_info_box3("🥗 Dietary Bot", font_size="28px", align="center")
+        st.markdown("Ask our RAG Assistant anything about the Malaysian Dietary Guidelines.")
+        st.button("Consult JagaMakan Bot", on_click=go_jagamakan)
 
 # ==========================
 # 🧬 BODY FAT PAGE (INTEGRATED)
@@ -240,3 +271,49 @@ elif st.session_state.page == 'plan':
                     st.error(f"Error: {res.text}")
             except Exception as e:
                 st.error(f"Connection failed: {e}")
+
+# ==========================
+# 🥗 JAGAMAKAN DIETARY BOT PAGE
+# ==========================
+elif st.session_state.page == 'jagamakan':
+    st.button("← Back to Home", on_click=go_home)
+    st.title("🥗 JagaMakan Dietary Assistant")
+    st.write("Ask me anything about the 2020 Malaysian Dietary Guidelines!")
+
+    # Initialize chat history for this specific page
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    # Display previous chat messages from history on app rerun
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Accept user input
+    if prompt := st.chat_input("What should I eat for a healthy breakfast?"):
+        
+        # Display user message in chat message container
+        with st.chat_message("user"):
+            st.markdown(prompt)
+            
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        # Fetch Response from FastAPI Backend
+        with st.chat_message("assistant"):
+            with st.spinner("Consulting the guidelines..."):
+                try:
+                    # Pointing to the new route we built
+                    # Make sure the backend endpoint matches this URL!
+                    res = requests.post(f"{API_URL}/api/jagamakan/chat", json={"query": prompt})
+                    #res = requests.post("http://localhost:8000/api/jagamakan/chat", json={"query": prompt})
+                    res.raise_for_status()
+                    
+                    answer = res.json().get("answer", "Error returning answer.")
+                    st.markdown(answer)
+                    
+                    # Add assistant response to chat history
+                    st.session_state.messages.append({"role": "assistant", "content": answer})
+                    
+                except Exception as e:
+                    st.error(f"Connection Failed. \nError: {e}")

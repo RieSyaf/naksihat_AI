@@ -6,6 +6,9 @@ import numpy as np
 from app.wdr_engine import get_diet_workout_prediction
 from app.bfp_engine import get_bodyfat_prediction
 
+# Import the JagaMakan router
+from app.jagamakan_router import router as jagamakan_router
+
 app = FastAPI(title='Naksihat AI API', version='2.0')
 
 # --- DATA MODELS ---
@@ -83,3 +86,6 @@ def predict_bfp(stats: BodyFatInput):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+# --- JagaMakan Router for Dietary Q&A ---
+app.include_router(jagamakan_router)
