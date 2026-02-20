@@ -39,7 +39,6 @@ jobs:
           gcloud builds submit . --tag gcr.io/$PROJECT_ID/naksihat-api
 
       # 5. Deploy BACKEND
-      # This launches the container on a server and injects our RAG environment variables
       - name: Deploy Backend Service
         run: |
           gcloud run deploy naksihat-api \
@@ -48,6 +47,8 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --port 8080 \
+            --memory 2Gi \
+            --cpu 2 \
             --update-env-vars "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }},SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
 
       # 6. Build and Push FRONTEND (UI)
