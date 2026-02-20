@@ -7,7 +7,7 @@ xgboost
 joblib
 streamlit
 supabase==2.22.0
-supabase-auth<2.28.0
+supabase-auth==2.22.0
 python-dotenv
 requests
 python-multipart
