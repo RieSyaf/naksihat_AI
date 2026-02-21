@@ -9,6 +9,7 @@ COPY ./requirements.txt /code/requirements.txt
 
 # 4. Install dependencies
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN sed -i 's/query_builder.params = query_builder.params.set("limit", k)/query_builder = query_builder.limit(k)/' /usr/local/lib/python3.11/site-packages/langchain_community/vectorstores/supabase.py
 
 # 5. Copy your actual application code
 COPY ./app /code/app
